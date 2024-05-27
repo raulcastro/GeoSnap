@@ -87,7 +87,7 @@ GeoSnap is an open-source project that allows you to upload photos with metadata
 ## Notes
 - The project is configured to handle photo uploads with a maximum file size of 20MB. Ensure your PHP settings are configured accordingly.
 
-- If you encounter any issues with file uploads, verify that your php.ini settings are correctly configured and that your web server has been restarted to apply the changes.
+- If you encounter any issues with file uploads, verify that your `php.ini` settings are correctly configured and that your web server has been restarted to apply the changes.
 
 ## License
 GeoSnap is licensed under the [GPL-3.0](LICENSE) license.
