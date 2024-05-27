@@ -1,9 +1,10 @@
 {
-    "name": "laravel/laravel",
+    "name": "raulcastro/geosnap",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "Geolocate and visualize your photos on a map.",
     "keywords": ["laravel", "framework"],
-    "license": "MIT",
+    "license": "GPL-3.0",
+    "version": "0.1.0",
     "require": {
         "php": "^8.2",
         "jeroennoten/laravel-adminlte": "^3.11",
