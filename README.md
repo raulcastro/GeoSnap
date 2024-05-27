@@ -62,6 +62,7 @@ GeoSnap is an open-source project that allows you to upload photos with metadata
 - **Database:** MySQL
 - **Storage:** Firebase Storage or Amazon S3 (optional)
 - **Maps:** Google Maps API
+- **Admin Panel:** AdminLTE
 
 ## License
 GeoSnap is licensed under the [GPL-3.0](LICENSE) license.
