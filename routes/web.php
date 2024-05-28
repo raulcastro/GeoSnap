@@ -17,3 +17,5 @@ Route::post('/photos/upload', [PhotoController::class, 'upload'])->name('photos.
 
 Route::get('/home', [PhotoController::class, 'index'])->name('home');
 Route::get('/photo-list', [PhotoController::class, 'allPhotos']);
+
+Route::get('/last-photo', [PhotoController::class, 'lastPhoto']);

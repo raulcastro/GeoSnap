@@ -49,6 +49,12 @@
             </div>
         </div>
     </div>
+
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div id="map" style="height: 500px;"></div>
+        </div>
+    </div>
 @stop
 
 @section('css')
@@ -57,12 +63,19 @@
             height: 150px;
             object-fit: cover;
         }
+
+        #map {
+            width: 100%;
+            height: 500px;
+        }
     </style>
 @stop
 
 @section('js')
     @vite(['resources/js/app.js'])
-
+    <script
+    src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&callback=initMap&libraries=places&v=weekly"
+    async></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             loadCarousel();
@@ -92,5 +105,43 @@
                     .catch(error => console.error('Error loading carousel:', error));
             }
         });
+
+        function initMap() {
+            fetch('/last-photo')
+                .then(response => response.json())
+                .then(data => {
+                    const lastPhoto = data.lastPhoto;
+                    const mapCenter = lastPhoto ? { lat: parseFloat(lastPhoto.latitude), lng: parseFloat(lastPhoto.longitude) } : { lat: -34.397, lng: 150.644 };
+
+                    const map = new google.maps.Map(document.getElementById('map'), {
+                        zoom: 12,
+                        center: mapCenter,
+                    });
+
+                    fetch('/photo-list')
+                        .then(response => response.json())
+                        .then(data => {
+                            data.photos.forEach(photo => {
+                                if (photo.latitude && photo.longitude) {
+                                    const marker = new google.maps.Marker({
+                                        position: { lat: parseFloat(photo.latitude), lng: parseFloat(photo.longitude) },
+                                        map: map,
+                                        title: photo.file_path,
+                                    });
+
+                                    const infoWindow = new google.maps.InfoWindow({
+                                        content: `<img src="/storage/photos/${photo.file_path}" style="width: 100px; height: auto;"><br>${photo.file_path}`
+                                    });
+
+                                    marker.addListener('click', () => {
+                                        infoWindow.open(map, marker);
+                                    });
+                                }
+                            });
+                        })
+                        .catch(error => console.error('Error loading photos:', error));
+                })
+                .catch(error => console.error('Error loading last photo:', error));
+        }
     </script>
 @stop

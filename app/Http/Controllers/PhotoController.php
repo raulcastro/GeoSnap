@@ -144,7 +144,17 @@ class PhotoController extends Controller
      */
     public function allPhotos()
     {
-        $photos = Photo::all();
+        $photos = Photo::all(['file_path', 'latitude', 'longitude']);
         return response()->json(['photos' => $photos]);
+    }
+
+
+    public function lastPhoto()
+    {
+        $lastPhoto = Photo::whereNotNull('latitude')
+            ->whereNotNull('longitude')
+            ->latest()
+            ->first(['latitude', 'longitude']);
+        return response()->json(['lastPhoto' => $lastPhoto]);
     }
 }
