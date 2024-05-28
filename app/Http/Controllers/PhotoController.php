@@ -2,67 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Photo;
 use Illuminate\Http\Request;
+use App\Models\Photo;
+
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Imagick\Driver;
+
 
 class PhotoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
-
     public function upload(Request $request)
     {
         $request->validate([
@@ -70,10 +20,32 @@ class PhotoController extends Controller
         ]);
 
         $file = $request->file('file');
-        $path = $file->store('photos', 'public');
+
+        $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+        $extension = $file->getClientOriginalExtension();
+
+        $randomString = Str::random(8);
+        $fileName = "{$originalName}_{$randomString}.{$extension}";
+
+        // Ensure directories exist
+        Storage::disk('public')->makeDirectory('photos');
+        Storage::disk('public')->makeDirectory('photos/thumbnails');
+
+        // Original Image
+        $file->storeAs('photos', $fileName, 'public');
 
         // Get the file path
-        $filePath = storage_path('app/public/' . $path);
+        $filePath = storage_path('app/public/photos/' . $fileName);
+
+        // Create a thumbnail
+        $manager = new ImageManager(new Driver());
+
+        // Thumbnail Image
+        $thumbnail = $manager->read($file->getRealPath())->scale(width: 200);
+
+
+        $thumbnailPath = storage_path('app/public/photos/thumbnails/' . $fileName);
+        $thumbnail->save($thumbnailPath);
 
         // Extract EXIF data if available
         $exifData = $this->sanitizeExifData(exif_read_data($filePath) ?: []);
@@ -96,7 +68,7 @@ class PhotoController extends Controller
 
         // Create photo record
         $photo = Photo::create([
-            'file_path' => $path,
+            'file_path' => $fileName,
             'make' => $metadata['make'],
             'model' => $metadata['model'],
             'latitude' => $metadata['latitude'],
@@ -112,7 +84,7 @@ class PhotoController extends Controller
         ]);
 
         return response()->json([
-            'path' => $path,
+            'path' => $fileName,
             'metadata' => $metadata,
         ], 200, [], JSON_UNESCAPED_UNICODE);
     }
