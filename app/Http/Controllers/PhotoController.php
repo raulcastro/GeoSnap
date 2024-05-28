@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Imagick\Driver;
 
-
 class PhotoController extends Controller
 {
     public function upload(Request $request)
@@ -42,7 +41,6 @@ class PhotoController extends Controller
 
         // Thumbnail Image
         $thumbnail = $manager->read($file->getRealPath())->scale(width: 200);
-
 
         $thumbnailPath = storage_path('app/public/photos/thumbnails/' . $fileName);
         $thumbnail->save($thumbnailPath);
@@ -83,10 +81,15 @@ class PhotoController extends Controller
             'additional_metadata' => $metadata['additional_metadata'],
         ]);
 
-        return response()->json([
-            'path' => $fileName,
-            'metadata' => $metadata,
-        ], 200, [], JSON_UNESCAPED_UNICODE);
+        return response()->json(
+            [
+                'path' => $fileName,
+                'metadata' => $metadata,
+            ],
+            200,
+            [],
+            JSON_UNESCAPED_UNICODE,
+        );
     }
 
     private function sanitizeExifData($data)
@@ -115,7 +118,7 @@ class PhotoController extends Controller
 
         $flip = ($hemi == 'W' or $hemi == 'S') ? -1 : 1;
 
-        return $flip * ($degrees + ($minutes / 60) + ($seconds / 3600));
+        return $flip * ($degrees + $minutes / 60 + $seconds / 3600);
     }
 
     private function convertToDecimal($value)
@@ -128,6 +131,12 @@ class PhotoController extends Controller
         } else {
             return 0;
         }
+    }
+
+    public function index()
+    {
+        $photos = Photo::all();
+        return view('home', compact('photos'));
     }
 
     /**

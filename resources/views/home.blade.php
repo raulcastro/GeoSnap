@@ -23,8 +23,20 @@
     <div class="row mt-4">
         <div class="col-md-12">
             <div id="photoCarousel" class="carousel slide" data-ride="carousel">
-                <div class="carousel-inner" id="carousel-inner">
-                    <!-- Dynamic content will be inserted here -->
+                <div class="carousel-inner" role="listbox">
+                    @foreach($photos->chunk(12) as $chunk)
+                        <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
+                            <div class="row">
+                                @foreach($chunk as $photo)
+                                    <div class="col-md-1">
+                                        <div class="card">
+                                            <img src="{{ asset('storage/photos/thumbnails/' . $photo->file_path) }}" class="card-img-top carousel-img">
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
                 <a class="carousel-control-prev" href="#photoCarousel" role="button" data-slide="prev">
                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -39,6 +51,14 @@
     </div>
 @stop
 
+@section('css')
+    <style>
+        .carousel-img {
+            height: 150px;
+            object-fit: cover;
+        }
+    </style>
+@stop
 
 @section('js')
     @vite(['resources/js/app.js'])
