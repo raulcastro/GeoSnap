@@ -129,4 +129,13 @@ class PhotoController extends Controller
             return 0;
         }
     }
+
+    /**
+     * Display a listing of the photos.
+     */
+    public function allPhotos()
+    {
+        $photos = Photo::all();
+        return response()->json(['photos' => $photos]);
+    }
 }

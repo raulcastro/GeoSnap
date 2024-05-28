@@ -68,6 +68,15 @@ GeoSnap is an open-source project that allows you to upload photos with metadata
    ```bash
    php artisan migrate
    ```
+8. **Create storage link:**
+    ```bash
+    php artisan storage:link
+    ```
+9. **Set permissions:**
+    ```bash
+    sudo chmod -R 775 storage bootstrap/cache
+    sudo chown -R www-data:www-data storage bootstrap/cache
+    ```
 
 8. **Serve the application:**
    ```bash
