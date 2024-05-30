@@ -28,11 +28,15 @@
                         <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
                             <div class="row">
                                 @foreach($chunk as $photo)
-                                    <div class="col-md-1">
-                                        <div class="card">
-                                            <img src="{{ asset('storage/photos/thumbnails/' . $photo->file_path) }}" class="card-img-top carousel-img">
+                                <div class="col-md-1">
+                                    <div class="card photo-card">
+                                        <img src="{{ asset('storage/photos/thumbnails/' . $photo->file_path) }}" class="card-img-top carousel-img">
+                                        <div class="photo-overlay">
+                                            <a href="#" class="delete-photo"><i class="fas fa-trash-alt"></i></a>
+                                            <a href="#" class="view-photo"><i class="fas fa-search"></i></a>
                                         </div>
                                     </div>
+                                </div>
                                 @endforeach
                             </div>
                         </div>
@@ -55,6 +59,22 @@
             <div id="map" style="height: 500px;"></div>
         </div>
     </div>
+
+    <div class="modal fade" id="photoModal" tabindex="-1" role="dialog" aria-labelledby="photoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="photoModalLabel">Photo Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Photo details will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
 @stop
 
 @section('css')
@@ -67,6 +87,40 @@
         #map {
             width: 100%;
             height: 500px;
+        }
+        .photo-card {
+            position: relative;
+        }
+
+        .photo-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .photo-card:hover .photo-overlay {
+            opacity: 1;
+        }
+
+        .photo-overlay .delete-photo {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .photo-overlay .view-photo {
+            color: white;
+            font-size: 2rem;
         }
     </style>
 @stop
