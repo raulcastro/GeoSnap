@@ -114,7 +114,7 @@
             position: absolute;
             top: 10px;
             right: 10px;
-            color: white;
+            color: red;
             font-size: 1.2rem;
         }
 
